@@ -4,8 +4,8 @@ import {PluginInterface, PluginParams} from '../types/interface';
 
 export const NNE = (): PluginInterface => {
   //
-  const METRICS = ['hardware/training', 'time/training', 'efficency/training', 'power/training',
-                   'hardware/querying', 'time/querying', 'efficency/querying', 'power/querying']; 
+  const METRICS = ['hardware/training', 'time/training', 'pue/training', 'power/training',
+                   'hardware/querying', 'time/querying', 'pue/querying', 'power/querying']; 
   //
   const metadata = {
     kind: 'execute',
@@ -14,7 +14,7 @@ export const NNE = (): PluginInterface => {
   /**
    * Execute's strategy description here.
    */
-  const execute = async (inputs: PluginParams[]): Promise<PluginParams[]> => { //: Promise<PluginParams[]> ??
+  const execute = async (inputs: PluginParams[]): Promise<PluginParams[]> => { 
     return inputs.map(input => {
       // your logic here ??
       globalConfig;
