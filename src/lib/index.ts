@@ -1,1 +1,2 @@
-export {MyCustomPlugin} from './my-custom-plugin';
+export {NNEQ} from './NN-EQ';
+export {NNET} from './NN-ET';
