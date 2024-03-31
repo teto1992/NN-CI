@@ -1,4 +1,4 @@
-import {ZodIssue,/* ZodIssueCode,*/ ZodSchema} from 'zod';
+import {ZodIssue, /* ZodIssueCode,*/ ZodSchema} from 'zod';
 
 import {ERRORS} from './errors';
 
@@ -18,25 +18,21 @@ const prettifyErrorMessage = (issues: string) => {
 
   return issuesArray.map((issue: ZodIssue) => {
     const code = issue.code;
-    let {path, message} = issue;
+    const {path, message} = issue;
     const fullPath = flattenPath(path);
     return `"${fullPath}" parameter is ${message.toLowerCase()}. Error code: ${code}.`;
   });
 };
 
-
-
 /**
  * Flattens an array representing a nested path into a string.
  */
 const flattenPath = (path: (string | number)[]): string => {
-  const flattenPath = path.map(part =>
-    /*typeof part === 'number' ?  `[${part}]` */ part
+  const flattenPath = path.map(
+    part => /*typeof part === 'number' ?  `[${part}]` */ part
   );
   return flattenPath.join('.');
 };
-
-
 
 /**
  * Validates given `object` with given `schema`.
