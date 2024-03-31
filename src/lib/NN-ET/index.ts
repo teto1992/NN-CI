@@ -37,8 +37,7 @@ export const NNET = (globalConfig: YourGlobalConfig): PluginInterface => {
   };
   /**
    * Calculate the Energy consumed during the Training.
-   * Et = ∆
-   * Et = |Ht| * Time duration of the training * PUEt * Power consumedt
+   * Et = |Ht| * ∆t * PUE * Power consumedt
    *
    */
   const calculateenergyTraining = (input: PluginParams) => {

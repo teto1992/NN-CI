@@ -35,7 +35,7 @@ export const NNEQ = (globalConfig: YourGlobalConfig): PluginInterface => {
   };
   /**
    * Calculate the Energy consumed during the Training.
-   * Eq = |Hq| * Time duration of the quering * PUEq * Power consumedq
+   * Eq = |Hq| * ∆t * PUEq * Power consumedq
    */
   const calculateenergyQ = (input: PluginParams) => {
     const serversQuery = input['servers/query'];
