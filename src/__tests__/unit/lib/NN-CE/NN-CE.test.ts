@@ -92,6 +92,33 @@ describe('lib/NNCE: ', () => {
     }
   });
 
+  it('throw an error on an invalid input type', async () => {
+    const errorMessage = 'NNCE: tau/italy is not a number.';
+    const globalConfig = {
+      'input-parameters': {
+        'location/servers-energy': ['server/italy'],
+        'location/carbon-intensity': ['alpha/italy'],
+        'location/energy-transport': ['tau/italy'],
+      },
+      'output-parameter': 'carbon-emission',
+    };
+    const pluginInstance = NNCE(globalConfig);
+    const inputs = [
+      {
+        'server/italy': 100,
+        'alpha/italy': 0.389,
+        'tau/italy': 'foo',
+      },
+    ];
+    expect.assertions(2);
+    try {
+      await pluginInstance.execute(inputs);
+    } catch (error) {
+      expect(error).toStrictEqual(new InputValidationError(errorMessage));
+      expect(error).toBeInstanceOf(InputValidationError);
+    }
+  });
+
   it('throw an error on a missing server energy', async () => {
     const errorMessage = 'NNCE: server/italy is missing from the input array.';
     const globalConfig = {

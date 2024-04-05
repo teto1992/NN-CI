@@ -59,16 +59,9 @@ export const NNEC = (globalConfig: NNECGlobalConfig): PluginInterface => {
         input[deviceProductionEnergyList[i]];
       const carbonIntensity: number = input[carbonIntensityList[i]];
       const energyFactor: number = input[energyFactorList[i]];
-      console.table([
-        deviceCount,
-        deviceProductionEnergy,
-        carbonIntensity,
-        energyFactor,
-      ]);
       totalEmbodiedCarbon +=
         (carbonIntensity / energyFactor) *
         (deviceProductionEnergy * deviceCount);
-      console.log(totalEmbodiedCarbon);
     }
     return totalEmbodiedCarbon;
   };
