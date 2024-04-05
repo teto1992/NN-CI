@@ -23,6 +23,16 @@ initialize:
     nn-et:
       path: 'if-plugin-nnci'
       method: NNET
+      global-config:
+        input-parameters:
+          {
+            'hardware/count/training': 'hardware/training',
+            'hardware/power/training': 'power/hardware-training',
+            'servers/power/training': 'servers/training',
+            'time/training': 'time/training',
+            'pue/training': 'pue/training',
+          }
+        output-parameter: 'energy-consumed-by-training-NN'
     nn-eq:
       path: 'if-plugin-nnci'
       method: NNEQ

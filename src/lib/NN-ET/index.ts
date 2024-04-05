@@ -1,21 +1,25 @@
 import {z} from 'zod';
 
-import {YourGlobalConfig} from './types';
+import {ERRORS} from '../util/errors';
+import {buildErrorMessage} from '../util/helpers';
+import {validate, allDefined} from '../util/validations';
+import {NNETGlobalConfig, NNETKeys, YourGlobalConfig} from './types';
 import {PluginInterface, PluginParams} from '../types/interface';
 
-import {validate, allDefined} from '../util/validations';
+const {InputValidationError} = ERRORS;
 
 export const NNET = (globalConfig: YourGlobalConfig): PluginInterface => {
+  const errorBuilder = buildErrorMessage(NNET.name);
   const metadata = {
     kind: 'execute',
   };
   const METRICS = [
-    'hardware/training', //number >= 1
-    'servers/training',
-    'time/training', // in hours
-    'pue/training', //number < 1 && > 0
-    'power/hardware-training', // Watt
-    'power/servers-training',
+    'hardware/count/training', // number >= 1
+    'hardware/power/training', // watt
+    'servers/count/training', // number >= 1
+    'servers/power/training', // watt
+    'time/training', // time (hours)
+    'pue/training', // power usage effectiveness
   ];
 
   /**
@@ -23,14 +27,20 @@ export const NNET = (globalConfig: YourGlobalConfig): PluginInterface => {
    */
   const execute = async (inputs: PluginParams[]): Promise<PluginParams[]> => {
     return inputs.map(input => {
-      // your logic here ??
-      globalConfig; //nothing??
-      const safeInput = Object.assign({}, input, validateInput(input));
+      const safeGlobalConfig = validateGlobalConfig();
+      const inputParamenters: NNETGlobalConfig =
+        safeGlobalConfig['input-parameters'];
+      const outputParameter = safeGlobalConfig['output-parameter'];
+      const safeInput = Object.assign(
+        {},
+        input,
+        validateInput(input, inputParamenters)
+      );
 
       return {
         //
-        ...input,
-        'energy-consumed-by-training-NN': calculateenergyTraining(safeInput),
+        ...safeInput,
+        [outputParameter]: calculateEnergyTraining(safeInput, inputParamenters),
         //
       };
     });
@@ -40,13 +50,18 @@ export const NNET = (globalConfig: YourGlobalConfig): PluginInterface => {
    * Et = |Ht| * ∆t * PUEt * Power consumedt
    *
    */
-  const calculateenergyTraining = (input: PluginParams) => {
-    const hardwareTraining = input['hardware/training'];
-    const serversTraining = input['servers/training'];
-    const timeTraining = input['time/training'];
-    const pueTraining = input['pue/training'];
-    const powerHardwareTraining = input['power/hardware-training'];
-    const powerServersTraining = input['power/servers-training'];
+  const calculateEnergyTraining = (
+    input: PluginParams,
+    inputParameters: NNETGlobalConfig
+  ) => {
+    const hardwareTraining = input[inputParameters['hardware/count/training']];
+    const serversTraining = input[inputParameters['servers/count/training']];
+    const timeTraining = input[inputParameters['time/training']];
+    const pueTraining = input[inputParameters['pue/training']];
+    const powerHardwareTraining =
+      input[inputParameters['hardware/power/training']];
+    const powerServersTraining =
+      input[inputParameters['servers/power/training']];
 
     return (
       (pueTraining *
@@ -56,22 +71,51 @@ export const NNET = (globalConfig: YourGlobalConfig): PluginInterface => {
       1000
     );
   };
-  //HELP PLS validation function
-  const validateInput = (input: PluginParams) => {
-    //do not know what it dose
 
-    const schema = z
+  const validateGlobalConfig = () => {
+    const globalConfigSchema = z
       .object({
-        'hardware/training': z.number().gte(1),
-        'servers/training': z.number().gte(1),
-        'time/training': z.number().gt(0),
-        'pue/training': z.number().gte(1),
-        'power/hardware-training': z.number().gte(1),
-        'power/servers-training': z.number().gte(1),
+        'input-parameters': z.object({
+          'hardware/count/training': z.string().min(1),
+          'hardware/power/training': z.string().min(1),
+          'servers/count/training': z.string().min(1),
+          'servers/power/training': z.string().min(1),
+          'time/training': z.string().min(1),
+          'pue/training': z.string().min(1),
+        }),
+        'output-parameter': z.string().min(1),
       })
-      .refine(allDefined, {message: `All ${METRICS} should be present.`});
-    return validate<z.infer<typeof schema>>(schema, input);
+      .refine(allDefined, {message: `All ${METRICS} should be present`});
+    return validate<z.infer<typeof globalConfigSchema>>(
+      globalConfigSchema,
+      globalConfig
+    );
   };
+
+  const validateInput = (
+    input: PluginParams,
+    inputParameters: NNETGlobalConfig
+  ) => {
+    const keys: NNETKeys[] = Object.keys(inputParameters) as NNETKeys[];
+    for (const parameter of keys) {
+      if (!input[inputParameters[parameter]]) {
+        throw new InputValidationError(
+          errorBuilder({
+            message: `${inputParameters[parameter]} is missing from the input array`,
+          })
+        );
+      }
+      if (typeof input[inputParameters[parameter]] !== 'number') {
+        throw new InputValidationError(
+          errorBuilder({
+            message: `${inputParameters[parameter]} is not a number`,
+          })
+        );
+      }
+    }
+    return input;
+  };
+
   return {
     metadata,
     execute,

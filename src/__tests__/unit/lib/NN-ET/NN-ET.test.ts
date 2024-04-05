@@ -17,7 +17,18 @@ describe('lib/NNET: ', () => {
 
     describe('execute(): ', () => {
       it('applies logic on provided inputs array.', async () => {
-        const pluginInstance = NNET({});
+        const globalConfig = {
+          'input-parameters': {
+            'hardware/count/training': 'hardware/training',
+            'hardware/power/training': 'power/hardware-training',
+            'servers/count/training': 'servers/training',
+            'servers/power/training': 'power/servers-training',
+            'time/training': 'time/training',
+            'pue/training': 'pue/training',
+          },
+          'output-parameter': 'energy-consumed-by-training-NN',
+        };
+        const pluginInstance = NNET(globalConfig);
         const inputs = [
           {
             'hardware/training': 10000, //number >= 1
@@ -40,15 +51,59 @@ describe('lib/NNET: ', () => {
           },
         ];
 
-        const response = await pluginInstance.execute(inputs, {});
+        const response = await pluginInstance.execute(inputs);
         expect(response).toStrictEqual(output);
       });
 
-      it('throws an error on missing "hardware/training" ', async () => {
-        const errorMessage =
-          '"hardware/training" parameter is required. Error code: invalid_type.';
+      it('throw an error on a wrong input type', async () => {
+        const globalConfig = {
+          'input-parameters': {
+            'hardware/count/training': 'hardware/training',
+            'hardware/power/training': 'power/hardware-training',
+            'servers/count/training': 'servers/training',
+            'servers/power/training': 'power/servers-training',
+            'time/training': 'time/training',
+            'pue/training': 'pue/training',
+          },
+          'output-parameter': 'energy-consumed-by-training-NN',
+        };
+        const errorMessage = 'NNET: servers/training is not a number.';
+        const pluginInstance = NNET(globalConfig);
+        const inputs = [
+          {
+            'hardware/training': 10000, //number >= 1
+            'servers/training': '625',
+            'time/training': 360, // in hours
+            'pue/training': 1.1, //number < 2 && > 1
+            'power/hardware-training': 300, // Watt
+            'power/servers-training': 250,
+          },
+        ];
+        expect.assertions(2);
+        try {
+          await pluginInstance.execute(inputs);
+        } catch (error) {
+          expect(error).toStrictEqual(new InputValidationError(errorMessage));
+          expect(error).toBeInstanceOf(InputValidationError);
+        }
+      });
 
-        const pluginInstance = NNET({});
+      it('throws an error on missing "hardware/training" ', async () => {
+        const globalConfig = {
+          'input-parameters': {
+            'hardware/count/training': 'hardware/training',
+            'hardware/power/training': 'power/hardware-training',
+            'servers/count/training': 'servers/training',
+            'servers/power/training': 'power/servers-training',
+            'time/training': 'time/training',
+            'pue/training': 'pue/training',
+          },
+          'output-parameter': 'energy-consumed-by-training-NN',
+        };
+        const errorMessage =
+          'NNET: hardware/training is missing from the input array.';
+
+        const pluginInstance = NNET(globalConfig);
         const inputs = [
           {
             'servers/training': 625,
@@ -68,10 +123,21 @@ describe('lib/NNET: ', () => {
       });
 
       it('throws an error on missing "servers/training" ', async () => {
+        const globalConfig = {
+          'input-parameters': {
+            'hardware/count/training': 'hardware/training',
+            'hardware/power/training': 'power/hardware-training',
+            'servers/count/training': 'servers/training',
+            'servers/power/training': 'power/servers-training',
+            'time/training': 'time/training',
+            'pue/training': 'pue/training',
+          },
+          'output-parameter': 'energy-consumed-by-training-NN',
+        };
         const errorMessage =
-          '"servers/training" parameter is required. Error code: invalid_type.';
+          'NNET: servers/training is missing from the input array.';
 
-        const pluginInstance = NNET({});
+        const pluginInstance = NNET(globalConfig);
         const inputs = [
           {
             'hardware/training': 10000, //number >= 1
@@ -91,10 +157,21 @@ describe('lib/NNET: ', () => {
       });
 
       it('throws an error on missing "time/training" ', async () => {
+        const globalConfig = {
+          'input-parameters': {
+            'hardware/count/training': 'hardware/training',
+            'hardware/power/training': 'power/hardware-training',
+            'servers/count/training': 'servers/training',
+            'servers/power/training': 'power/servers-training',
+            'time/training': 'time/training',
+            'pue/training': 'pue/training',
+          },
+          'output-parameter': 'energy-consumed-by-training-NN',
+        };
         const errorMessage =
-          '"time/training" parameter is required. Error code: invalid_type.';
+          'NNET: time/training is missing from the input array.';
 
-        const pluginInstance = NNET({});
+        const pluginInstance = NNET(globalConfig);
         const inputs = [
           {
             'hardware/training': 10000, //number >= 1
@@ -114,10 +191,21 @@ describe('lib/NNET: ', () => {
       });
 
       it('throws an error on missing "pue/training" ', async () => {
+        const globalConfig = {
+          'input-parameters': {
+            'hardware/count/training': 'hardware/training',
+            'hardware/power/training': 'power/hardware-training',
+            'servers/count/training': 'servers/training',
+            'servers/power/training': 'power/servers-training',
+            'time/training': 'time/training',
+            'pue/training': 'pue/training',
+          },
+          'output-parameter': 'energy-consumed-by-training-NN',
+        };
         const errorMessage =
-          '"pue/training" parameter is required. Error code: invalid_type.';
+          'NNET: pue/training is missing from the input array.';
 
-        const pluginInstance = NNET({});
+        const pluginInstance = NNET(globalConfig);
         const inputs = [
           {
             'hardware/training': 10000, //number >= 1
@@ -137,10 +225,21 @@ describe('lib/NNET: ', () => {
       });
 
       it('throws an error on missing "power/hardware-training" ', async () => {
+        const globalConfig = {
+          'input-parameters': {
+            'hardware/count/training': 'hardware/training',
+            'hardware/power/training': 'power/hardware-training',
+            'servers/count/training': 'servers/training',
+            'servers/power/training': 'power/servers-training',
+            'time/training': 'time/training',
+            'pue/training': 'pue/training',
+          },
+          'output-parameter': 'energy-consumed-by-training-NN',
+        };
         const errorMessage =
-          '"power/hardware-training" parameter is required. Error code: invalid_type.';
+          'NNET: power/hardware-training is missing from the input array.';
 
-        const pluginInstance = NNET({});
+        const pluginInstance = NNET(globalConfig);
         const inputs = [
           {
             'hardware/training': 10000,
@@ -159,10 +258,21 @@ describe('lib/NNET: ', () => {
         }
       });
       it('throws an error on missing "power/servers-training" ', async () => {
+        const globalConfig = {
+          'input-parameters': {
+            'hardware/count/training': 'hardware/training',
+            'hardware/power/training': 'power/hardware-training',
+            'servers/count/training': 'servers/training',
+            'servers/power/training': 'power/servers-training',
+            'time/training': 'time/training',
+            'pue/training': 'pue/training',
+          },
+          'output-parameter': 'energy-consumed-by-training-NN',
+        };
         const errorMessage =
-          '"power/servers-training" parameter is required. Error code: invalid_type.';
+          'NNET: power/servers-training is missing from the input array.';
 
-        const pluginInstance = NNET({});
+        const pluginInstance = NNET(globalConfig);
         const inputs = [
           {
             'hardware/training': 10000, //number >= 1
