@@ -49,10 +49,11 @@ export const NNET = (globalConfig: YourGlobalConfig): PluginInterface => {
     const powerServersTraining = input['power/servers-training'];
 
     return (
-      pueTraining *
-      (hardwareTraining * powerHardwareTraining +
-        serversTraining * powerServersTraining) *
-      timeTraining
+      (pueTraining *
+        (hardwareTraining * powerHardwareTraining +
+          serversTraining * powerServersTraining) *
+        timeTraining) /
+      1000
     );
   };
   //HELP PLS validation function

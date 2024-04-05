@@ -19,7 +19,8 @@ describe('lib/NNCE: ', () => {
       const globalConfig = {
         'input-parameters': {
           'location/servers-energy': ['server/italy'],
-          'location/alpha': ['alpha/italy'],
+          'location/carbon-intensity': ['alpha/italy'],
+          'location/energy-transport': ['tau/italy'],
         },
         'output-parameter': 'carbon-emission',
       };
@@ -28,12 +29,14 @@ describe('lib/NNCE: ', () => {
         {
           'server/italy': 100,
           'alpha/italy': 0.389,
+          'tau/italy': 1,
         },
       ];
       const output = [
         {
           'server/italy': 100,
           'alpha/italy': 0.389,
+          'tau/italy': 1,
           'carbon-emission': 38.9,
         },
       ];
@@ -63,12 +66,12 @@ describe('lib/NNCE: ', () => {
   });
 
   it('throw an error on an invalid input', async () => {
-    const errorMessage =
-      'NNCE: server list and alpha list have different length.';
+    const errorMessage = 'NNCE: the provided lists have different length.';
     const globalConfig = {
       'input-parameters': {
         'location/servers-energy': ['server/italy'],
-        'location/alpha': [],
+        'location/carbon-intensity': [],
+        'location/energy-transport': ['tau/italy'],
       },
       'output-parameter': 'carbon-emission',
     };
@@ -77,6 +80,7 @@ describe('lib/NNCE: ', () => {
       {
         'server/italy': 100,
         'alpha/italy': 0.389,
+        'tau/italy': 1,
       },
     ];
     expect.assertions(2);
@@ -93,7 +97,8 @@ describe('lib/NNCE: ', () => {
     const globalConfig = {
       'input-parameters': {
         'location/servers-energy': ['server/italy'],
-        'location/alpha': ['alpha/italy'],
+        'location/carbon-intensity': ['alpha/italy'],
+        'location/energy-transport': ['tau/italy'],
       },
       'output-parameter': 'carbon-emission',
     };
@@ -101,6 +106,7 @@ describe('lib/NNCE: ', () => {
     const inputs = [
       {
         'alpha/italy': 0.389,
+        'tau/italy': 1,
       },
     ];
     expect.assertions(2);
@@ -112,12 +118,13 @@ describe('lib/NNCE: ', () => {
     }
   });
 
-  it('throw an error on a missing alpha', async () => {
+  it('throw an error on a missing carbon-intensity', async () => {
     const errorMessage = 'NNCE: alpha/italy is missing from the input array.';
     const globalConfig = {
       'input-parameters': {
         'location/servers-energy': ['server/italy'],
-        'location/alpha': ['alpha/italy'],
+        'location/carbon-intensity': ['alpha/italy'],
+        'location/energy-transport': ['tau/italy'],
       },
       'output-parameter': 'carbon-emission',
     };
@@ -125,6 +132,33 @@ describe('lib/NNCE: ', () => {
     const inputs = [
       {
         'server/italy': 100,
+        'tau/italy': 1,
+      },
+    ];
+    expect.assertions(2);
+    try {
+      await pluginInstance.execute(inputs);
+    } catch (error) {
+      expect(error).toStrictEqual(new InputValidationError(errorMessage));
+      expect(error).toBeInstanceOf(InputValidationError);
+    }
+  });
+
+  it('throw an error on a missing energy-transport', async () => {
+    const errorMessage = 'NNCE: tau/italy is missing from the input array.';
+    const globalConfig = {
+      'input-parameters': {
+        'location/servers-energy': ['server/italy'],
+        'location/carbon-intensity': ['alpha/italy'],
+        'location/energy-transport': ['tau/italy'],
+      },
+      'output-parameter': 'carbon-emission',
+    };
+    const pluginInstance = NNCE(globalConfig);
+    const inputs = [
+      {
+        'server/italy': 100,
+        'alpha/italy': 0.389,
       },
     ];
     expect.assertions(2);

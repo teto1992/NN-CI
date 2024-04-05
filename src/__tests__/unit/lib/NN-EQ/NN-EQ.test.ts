@@ -32,7 +32,7 @@ describe('lib/NNEQ: ', () => {
             'time/query': 24, // in hours
             'pue/query': 1.1, //number < 2 && > 1
             'power/query': 250,
-            'energy-consumed-by-query-NN': 23892000.000000004,
+            'energy-consumed-by-query-NN': 23892.000000000004,
           },
         ];
 

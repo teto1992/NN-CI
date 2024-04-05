@@ -36,7 +36,7 @@ describe('lib/NNET: ', () => {
             'pue/training': 1.1, //number < 2 && > 1
             'power/hardware-training': 300, // Watt
             'power/servers-training': 250,
-            'energy-consumed-by-training-NN': 1249875000.0000002,
+            'energy-consumed-by-training-NN': 1249875.0000000002,
           },
         ];
 

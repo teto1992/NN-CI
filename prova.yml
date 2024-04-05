@@ -11,7 +11,13 @@ initialize:
           {
             location/servers-energy:
               ['energy-consumed-by-training-NN', 'energy-consumed-by-query-NN'],
-            location/alpha: ['alpha/training', 'alpha/query'],
+            location/carbon-intensity:
+              ['carbon-intensity/training', 'carbon-intensity/query'],
+            location/energy-transport:
+              [
+                'energy-transport-factor/training',
+                'energy-transport-factor/query',
+              ],
           }
         output-parameter: 'carbon-emission-by-NN'
     nn-et:
@@ -39,5 +45,7 @@ tree:
           pue/training: 1.1
           power/hardware-training: 300
           power/servers-training: 250
-          alpha/training: 0.389
-          alpha/query: 0.389
+          carbon-intensity/training: 0.389
+          carbon-intensity/query: 0.389
+          energy-transport-factor/training: 1
+          energy-transport-factor/query: 1

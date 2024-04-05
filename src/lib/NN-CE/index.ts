@@ -3,19 +3,20 @@ import {z} from 'zod';
 import {ERRORS} from '../util/errors';
 import {buildErrorMessage} from '../util/helpers';
 import {validate, allDefined} from '../util/validations';
-import {YourGlobalConfig} from './types';
+import {NNCEGlobalConfig} from './types';
 import {PluginInterface, PluginParams} from '../types/interface';
 
 const {InputValidationError} = ERRORS;
 
-export const NNCE = (globalConfig: YourGlobalConfig): PluginInterface => {
+export const NNCE = (globalConfig: NNCEGlobalConfig): PluginInterface => {
   const errorBuilder = buildErrorMessage(NNCE.name);
   const metadata = {
     kind: 'execute',
   };
   const METRICS = [
     'location/servers-energy', // Array of servers energy consumption
-    'location/alpha', // Array of alpha (gCO2-eq)
+    'location/carbon-intensiy', // Array of carbon intensity (gCO2-eq/kwh)
+    'location/energy-transport', // Array of energy transport factor
   ];
 
   /**
@@ -29,7 +30,8 @@ export const NNCE = (globalConfig: YourGlobalConfig): PluginInterface => {
       const safeInput = validateInput(
         input,
         inputParameters['location/servers-energy'],
-        inputParameters['location/alpha']
+        inputParameters['location/carbon-intensity'],
+        inputParameters['location/energy-transport']
       );
 
       return {
@@ -37,7 +39,8 @@ export const NNCE = (globalConfig: YourGlobalConfig): PluginInterface => {
         [outputParamter]: calculateNNCE(
           safeInput,
           inputParameters['location/servers-energy'],
-          inputParameters['location/alpha']
+          inputParameters['location/carbon-intensity'],
+          inputParameters['location/energy-transport']
         ),
       };
     });
@@ -45,16 +48,19 @@ export const NNCE = (globalConfig: YourGlobalConfig): PluginInterface => {
 
   /**
    * Calcualte the Equivalent Carbon Emission
-   * CE = Sum(alphal * El)
+   * CE = Sum((carbon-intensiy/energy-transport) * servers-energy)
    */
   const calculateNNCE = (
     input: PluginParams,
     servers: string[],
-    alphaList: string[]
+    carbonIntensityList: string[],
+    energyTransportList: string[]
   ) => {
     let ce = 0;
     for (let i = 0; i < servers.length; i++)
-      ce += input[servers[i]] * input[alphaList[i]];
+      ce +=
+        input[servers[i]] *
+        (input[carbonIntensityList[i]] / input[energyTransportList[i]]);
     return ce;
   };
 
@@ -63,7 +69,8 @@ export const NNCE = (globalConfig: YourGlobalConfig): PluginInterface => {
       .object({
         'input-parameters': z.object({
           'location/servers-energy': z.array(z.string()),
-          'location/alpha': z.array(z.string()),
+          'location/carbon-intensity': z.array(z.string()),
+          'location/energy-transport': z.array(z.string()),
         }),
         'output-parameter': z.string().min(1),
       })
@@ -77,12 +84,16 @@ export const NNCE = (globalConfig: YourGlobalConfig): PluginInterface => {
   const validateInput = (
     input: PluginParams,
     servers: string[],
-    alphaList: string[]
+    carbonIntensityList: string[],
+    energyTransportList: string[]
   ) => {
-    if (servers.length !== alphaList.length) {
+    if (
+      servers.length !== carbonIntensityList.length ||
+      servers.length !== energyTransportList.length
+    ) {
       throw new InputValidationError(
         errorBuilder({
-          message: 'server list and alpha list have different length',
+          message: 'the provided lists have different length',
         })
       );
     }
@@ -95,11 +106,20 @@ export const NNCE = (globalConfig: YourGlobalConfig): PluginInterface => {
         );
       }
     });
-    alphaList.forEach(alpha => {
-      if (!input[alpha]) {
+    carbonIntensityList.forEach(carbonIntensity => {
+      if (!input[carbonIntensity]) {
         throw new InputValidationError(
           errorBuilder({
-            message: `${alpha} is missing from the input array`,
+            message: `${carbonIntensity} is missing from the input array`,
+          })
+        );
+      }
+    });
+    energyTransportList.forEach(energyTransport => {
+      if (!input[energyTransport]) {
+        throw new InputValidationError(
+          errorBuilder({
+            message: `${energyTransport} is missing from the input array`,
           })
         );
       }

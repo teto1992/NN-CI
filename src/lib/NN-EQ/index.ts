@@ -42,7 +42,7 @@ export const NNEQ = (globalConfig: YourGlobalConfig): PluginInterface => {
     const timeQuery = input['time/query'];
     const pueQuery = input['pue/query'];
     const powerQuery = input['power/query'];
-    return serversQuery * timeQuery * pueQuery * powerQuery;
+    return (serversQuery * timeQuery * pueQuery * powerQuery) / 1000;
   };
   //HELP PLS validation function
   const validateInput = (input: PluginParams) => {
