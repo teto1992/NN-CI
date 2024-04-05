@@ -97,33 +97,25 @@ export const NNCE = (globalConfig: NNCEGlobalConfig): PluginInterface => {
         })
       );
     }
-    servers.forEach(server => {
-      if (!input[server]) {
+    const validator = (element: string) => {
+      if (!input[element]) {
         throw new InputValidationError(
           errorBuilder({
-            message: `${server} is missing from the input array`,
+            message: `${element} is missing from the input array`,
           })
         );
       }
-    });
-    carbonIntensityList.forEach(carbonIntensity => {
-      if (!input[carbonIntensity]) {
+      if (typeof input[element] !== 'number') {
         throw new InputValidationError(
           errorBuilder({
-            message: `${carbonIntensity} is missing from the input array`,
+            message: `${element} is not a number`,
           })
         );
       }
-    });
-    energyTransportList.forEach(energyTransport => {
-      if (!input[energyTransport]) {
-        throw new InputValidationError(
-          errorBuilder({
-            message: `${energyTransport} is missing from the input array`,
-          })
-        );
-      }
-    });
+    };
+    servers.forEach(validator);
+    carbonIntensityList.forEach(validator);
+    energyTransportList.forEach(validator);
     return input;
   };
 
