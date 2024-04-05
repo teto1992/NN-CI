@@ -4,7 +4,7 @@ tags:
 initialize:
   plugins:
     nn-ce:
-      path: '/home/scanna/NN-CI/'
+      path: 'if-plugin-nnci'
       method: NNCE
       global-config:
         input-parameters:
@@ -21,13 +21,13 @@ initialize:
           }
         output-parameter: 'carbon-emission-by-NN'
     nn-et:
-      path: '/home/scanna/NN-CI/'
+      path: 'if-plugin-nnci'
       method: NNET
     nn-eq:
-      path: '/home/scanna/NN-CI/'
+      path: 'if-plugin-nnci'
       method: NNEQ
     nn-ec:
-      path: '/home/scanna/NN-CI/'
+      path: 'if-plugin-nnci'
       method: NNEC
       global-config:
         input-parameters:
