@@ -37,6 +37,15 @@ initialize:
     nn-eq:
       path: 'if-plugin-nnci'
       method: NNEQ
+      global-config:
+        input-parameters:
+          {
+            'servers/count/query': 'servers/query',
+            'servers/power/query': 'power/query',
+            'time/query': 'time/query',
+            'pue/query': 'pue/query',
+          }
+        output-parameter: 'energy-consumed-by-query-NN'
     nn-ec:
       path: 'if-plugin-nnci'
       method: NNEC

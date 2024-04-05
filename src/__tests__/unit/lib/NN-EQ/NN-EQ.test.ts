@@ -17,7 +17,16 @@ describe('lib/NNEQ: ', () => {
 
     describe('execute(): ', () => {
       it('applies logic on provided inputs array.', async () => {
-        const pluginInstance = NNEQ({});
+        const globalConfig = {
+          'input-parameters': {
+            'servers/count/query': 'servers/query',
+            'servers/power/query': 'power/query',
+            'time/query': 'time/query',
+            'pue/query': 'pue/query',
+          },
+          'output-parameter': 'energy-consumed-by-query-NN',
+        };
+        const pluginInstance = NNEQ(globalConfig);
         const inputs = [
           {
             'servers/query': 3620,
@@ -40,11 +49,49 @@ describe('lib/NNEQ: ', () => {
         expect(response).toStrictEqual(output);
       });
 
-      it('throws an error on missing "servers/query" ', async () => {
-        const errorMessage =
-          '"servers/query" parameter is required. Error code: invalid_type.';
+      it('throw an error on a wrong input type', async () => {
+        const globalConfig = {
+          'input-parameters': {
+            'servers/count/query': 'servers/query',
+            'servers/power/query': 'power/query',
+            'time/query': 'time/query',
+            'pue/query': 'pue/query',
+          },
+          'output-parameter': 'energy-consumed-by-query-NN',
+        };
+        const errorMessage = 'NNEQ: servers/query is not a number.';
+        const pluginInstance = NNEQ(globalConfig);
+        const inputs = [
+          {
+            'servers/query': '3620',
+            'time/query': 24, // in hours
+            'pue/query': 1.1, //number < 2 && > 1
+            'power/query': 250, // Watt
+          },
+        ];
+        expect.assertions(2);
+        try {
+          await pluginInstance.execute(inputs);
+        } catch (error) {
+          expect(error).toStrictEqual(new InputValidationError(errorMessage));
+          expect(error).toBeInstanceOf(InputValidationError);
+        }
+      });
 
-        const pluginInstance = NNEQ({});
+      it('throws an error on missing "servers/query" ', async () => {
+        const globalConfig = {
+          'input-parameters': {
+            'servers/count/query': 'servers/query',
+            'servers/power/query': 'power/query',
+            'time/query': 'time/query',
+            'pue/query': 'pue/query',
+          },
+          'output-parameter': 'energy-consumed-by-query-NN',
+        };
+        const errorMessage =
+          'NNEQ: servers/query is missing from the input array.';
+
+        const pluginInstance = NNEQ(globalConfig);
         const inputs = [
           {
             'time/query': 24, // in hours
@@ -62,10 +109,19 @@ describe('lib/NNEQ: ', () => {
       });
 
       it('throws an error on missing "time/query" ', async () => {
+        const globalConfig = {
+          'input-parameters': {
+            'servers/count/query': 'servers/query',
+            'servers/power/query': 'power/query',
+            'time/query': 'time/query',
+            'pue/query': 'pue/query',
+          },
+          'output-parameter': 'energy-consumed-by-query-NN',
+        };
         const errorMessage =
-          '"time/query" parameter is required. Error code: invalid_type.';
+          'NNEQ: time/query is missing from the input array.';
 
-        const pluginInstance = NNEQ({});
+        const pluginInstance = NNEQ(globalConfig);
         const inputs = [
           {
             'servers/query': 24, // in hours
@@ -83,10 +139,18 @@ describe('lib/NNEQ: ', () => {
       });
 
       it('throws an error on missing "pue/query" ', async () => {
-        const errorMessage =
-          '"pue/query" parameter is required. Error code: invalid_type.';
+        const globalConfig = {
+          'input-parameters': {
+            'servers/count/query': 'servers/query',
+            'servers/power/query': 'power/query',
+            'time/query': 'time/query',
+            'pue/query': 'pue/query',
+          },
+          'output-parameter': 'energy-consumed-by-query-NN',
+        };
+        const errorMessage = 'NNEQ: pue/query is missing from the input array.';
 
-        const pluginInstance = NNEQ({});
+        const pluginInstance = NNEQ(globalConfig);
         const inputs = [
           {
             'servers/query': 24, // in hours
@@ -104,10 +168,19 @@ describe('lib/NNEQ: ', () => {
       });
 
       it('throws an error on missing "power/query" ', async () => {
+        const globalConfig = {
+          'input-parameters': {
+            'servers/count/query': 'servers/query',
+            'servers/power/query': 'power/query',
+            'time/query': 'time/query',
+            'pue/query': 'pue/query',
+          },
+          'output-parameter': 'energy-consumed-by-query-NN',
+        };
         const errorMessage =
-          '"power/query" parameter is required. Error code: invalid_type.';
+          'NNEQ: power/query is missing from the input array.';
 
-        const pluginInstance = NNEQ({});
+        const pluginInstance = NNEQ(globalConfig);
         const inputs = [
           {
             'servers/query': 24, // in hours

@@ -1,19 +1,23 @@
 import {z} from 'zod';
 
-import {YourGlobalConfig} from './types';
+import {ERRORS} from '../util/errors';
+import {buildErrorMessage} from '../util/helpers';
+import {validate, allDefined} from '../util/validations';
+import {NNEQGlobalConfig, NNEQKeys, YourGlobalConfig} from './types';
 import {PluginInterface, PluginParams} from '../types/interface';
 
-import {validate, allDefined} from '../util/validations';
+const {InputValidationError} = ERRORS;
 
 export const NNEQ = (globalConfig: YourGlobalConfig): PluginInterface => {
+  const errorBuilder = buildErrorMessage(NNEQ.name);
   const metadata = {
     kind: 'execute',
   };
   const METRICS = [
-    'servers/query', //number >= 1
+    'servers/count/query', //number >= 1
+    'servers/power/query', // Watt
     'time/query', // in hours
     'pue/query', //number < 1 && > 0
-    'power/query', // Watt
   ];
 
   /**
@@ -21,42 +25,78 @@ export const NNEQ = (globalConfig: YourGlobalConfig): PluginInterface => {
    */
   const execute = async (inputs: PluginParams[]): Promise<PluginParams[]> => {
     return inputs.map(input => {
-      // your logic here ??
-      globalConfig; //nothing??
-      const safeInput = Object.assign({}, input, validateInput(input));
+      const safeGlobalConfig = validateGlobalConfig();
+      const inputParameters: NNEQGlobalConfig =
+        safeGlobalConfig['input-parameters'];
+      const outputParameter = safeGlobalConfig['output-parameter'];
+      const safeInput = Object.assign(
+        {},
+        input,
+        validateInput(input, inputParameters)
+      );
 
       return {
-        //
-        ...input,
-        'energy-consumed-by-query-NN': calculateenergyQ(safeInput),
-        //
+        ...safeInput,
+        [outputParameter]: calculateenergyQ(safeInput, inputParameters),
       };
     });
   };
+
   /**
    * Calculate the Energy consumed during the Training.
    * Eq = |Hq| * ∆t * PUEq * Power consumedq
    */
-  const calculateenergyQ = (input: PluginParams) => {
-    const serversQuery = input['servers/query'];
-    const timeQuery = input['time/query'];
-    const pueQuery = input['pue/query'];
-    const powerQuery = input['power/query'];
+  const calculateenergyQ = (
+    input: PluginParams,
+    inputParameters: NNEQGlobalConfig
+  ) => {
+    const serversQuery = input[inputParameters['servers/count/query']];
+    const timeQuery = input[inputParameters['time/query']];
+    const pueQuery = input[inputParameters['pue/query']];
+    const powerQuery = input[inputParameters['servers/power/query']];
     return (serversQuery * timeQuery * pueQuery * powerQuery) / 1000;
   };
-  //HELP PLS validation function
-  const validateInput = (input: PluginParams) => {
-    //do not know what it dose
 
-    const schema = z
+  const validateGlobalConfig = () => {
+    const globalConfigSchema = z
       .object({
-        'servers/query': z.number().gte(1),
-        'time/query': z.number().gt(0),
-        'pue/query': z.number().gte(1),
-        'power/query': z.number().gte(1),
+        'input-parameters': z.object({
+          'servers/count/query': z.string().min(1),
+          'servers/power/query': z.string().min(1),
+          'time/query': z.string().min(1),
+          'pue/query': z.string().min(1),
+        }),
+        'output-parameter': z.string().min(1),
       })
-      .refine(allDefined, {message: `All ${METRICS} should be present.`});
-    return validate<z.infer<typeof schema>>(schema, input);
+      .refine(allDefined, {message: `All ${METRICS} should be present`});
+    return validate<z.infer<typeof globalConfigSchema>>(
+      globalConfigSchema,
+      globalConfig
+    );
+  };
+
+  const validateInput = (
+    input: PluginParams,
+    inputParameters: NNEQGlobalConfig
+  ) => {
+    const keys: NNEQKeys[] = Object.keys(inputParameters) as NNEQKeys[];
+    for (const parameter of keys) {
+      if (!input[inputParameters[parameter]]) {
+        throw new InputValidationError(
+          errorBuilder({
+            message: `${inputParameters[parameter]} is missing from the input array`,
+          })
+        );
+      }
+      if (typeof input[inputParameters[parameter]] !== 'number') {
+        throw new InputValidationError(
+          errorBuilder({
+            message: `${inputParameters[parameter]} is not a number`,
+          })
+        );
+      }
+    }
+    return input;
   };
   return {
     metadata,

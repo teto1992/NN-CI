@@ -28,19 +28,19 @@ export const NNET = (globalConfig: YourGlobalConfig): PluginInterface => {
   const execute = async (inputs: PluginParams[]): Promise<PluginParams[]> => {
     return inputs.map(input => {
       const safeGlobalConfig = validateGlobalConfig();
-      const inputParamenters: NNETGlobalConfig =
+      const inputParameners: NNETGlobalConfig =
         safeGlobalConfig['input-parameters'];
       const outputParameter = safeGlobalConfig['output-parameter'];
       const safeInput = Object.assign(
         {},
         input,
-        validateInput(input, inputParamenters)
+        validateInput(input, inputParameners)
       );
 
       return {
         //
         ...safeInput,
-        [outputParameter]: calculateEnergyTraining(safeInput, inputParamenters),
+        [outputParameter]: calculateEnergyTraining(safeInput, inputParameners),
         //
       };
     });
