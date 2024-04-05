@@ -28,7 +28,8 @@ initialize:
           {
             'hardware/count/training': 'hardware/training',
             'hardware/power/training': 'power/hardware-training',
-            'servers/power/training': 'servers/training',
+            'servers/count/training': 'servers/training',
+            'servers/power/training': 'power/servers-training',
             'time/training': 'time/training',
             'pue/training': 'pue/training',
           }
