@@ -26,21 +26,53 @@ initialize:
     nn-eq:
       path: '/home/scanna/NN-CI/'
       method: NNEQ
+    nn-ec:
+      path: '/home/scanna/NN-CI/'
+      method: NNEC
+      global-config:
+        input-parameters:
+          {
+            list/device-count:
+              ['hardware/training', 'servers/training', 'servers/query'],
+            list/device-production-energy:
+              [
+                'hardware-training-production-energy',
+                'servers-training-production-energy',
+                'server-query-production-energy',
+              ],
+            list/carbon-intensity:
+              [
+                'carbon-intensity/training',
+                'carbon-intensity/training',
+                'carbon-intensity/query',
+              ],
+            list/energy-transport:
+              [
+                'energy-transport-factor/training',
+                'energy-transport-factor/training',
+                'energy-transport-factor/query',
+              ],
+          }
+        output-parameter: 'embodied-carbon-of-NN'
 tree:
   children:
     child-1:
       pipeline:
         - nn-et
         - nn-eq
+        - nn-ec
         - nn-ce
       inputs:
         - timestamp: '2023-12-12T00:00:00.000Z'
           servers/query: 3620
+          server-query-production-energy: 750
           time/query: 24
           pue/query: 1.1
           power/query: 250
           hardware/training: 10000
+          hardware-training-production-energy: 1000
           servers/training: 625
+          servers-training-production-energy: 900
           time/training: 360
           pue/training: 1.1
           power/hardware-training: 300
