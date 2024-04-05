@@ -1,6 +1,6 @@
 # NN-ET (energy consumed by training a Neural Network)
 
-`nn-et` is a plugin that simply follows the formula givven by [Patterson et al.](https://arxiv.org/abs/2104.10350), 
+`nn-et` is a plugin inspired by the work of [Patterson et al.](https://arxiv.org/abs/2104.10350), 
 [Faiz et al.](https://arxiv.org/abs/2309.14393) and [Luccioni et al.](https://jmlr.org/papers/v24/23-0069.html) 
 The plugin returns `energy-consumed-by-training-NN` which is used as the input to the `nn-ce` plugin that calculates the emissions 
 for the training of a Neural Network.
