@@ -3,12 +3,12 @@ import {z} from 'zod';
 import {ERRORS} from '../util/errors';
 import {buildErrorMessage} from '../util/helpers';
 import {validate, allDefined} from '../util/validations';
-import {NNEQGlobalConfig, NNEQKeys, YourGlobalConfig} from './types';
+import {NNEQConfig, NNEQKeys, NNEQParameters} from './types';
 import {PluginInterface, PluginParams} from '../types/interface';
 
 const {InputValidationError} = ERRORS;
 
-export const NNEQ = (globalConfig: YourGlobalConfig): PluginInterface => {
+export const NNEQ = (globalConfig: NNEQConfig): PluginInterface => {
   const errorBuilder = buildErrorMessage(NNEQ.name);
   const metadata = {
     kind: 'execute',
@@ -20,13 +20,10 @@ export const NNEQ = (globalConfig: YourGlobalConfig): PluginInterface => {
     'pue/query', //number < 1 && > 0
   ];
 
-  /**
-   * Execute's strategy description here, looking at sci-m.
-   */
   const execute = async (inputs: PluginParams[]): Promise<PluginParams[]> => {
     return inputs.map(input => {
       const safeGlobalConfig = validateGlobalConfig();
-      const inputParameters: NNEQGlobalConfig =
+      const inputParameters: NNEQParameters =
         safeGlobalConfig['input-parameters'];
       const outputParameter = safeGlobalConfig['output-parameter'];
       const safeInput = Object.assign(
@@ -48,7 +45,7 @@ export const NNEQ = (globalConfig: YourGlobalConfig): PluginInterface => {
    */
   const calculateenergyQ = (
     input: PluginParams,
-    inputParameters: NNEQGlobalConfig
+    inputParameters: NNEQParameters
   ) => {
     const serversQuery = input[inputParameters['servers/count/query']];
     const timeQuery = input[inputParameters['time/query']];
@@ -77,7 +74,7 @@ export const NNEQ = (globalConfig: YourGlobalConfig): PluginInterface => {
 
   const validateInput = (
     input: PluginParams,
-    inputParameters: NNEQGlobalConfig
+    inputParameters: NNEQParameters
   ) => {
     const keys: NNEQKeys[] = Object.keys(inputParameters) as NNEQKeys[];
     for (const parameter of keys) {

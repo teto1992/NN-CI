@@ -3,12 +3,12 @@ import {z} from 'zod';
 import {ERRORS} from '../util/errors';
 import {buildErrorMessage} from '../util/helpers';
 import {validate, allDefined} from '../util/validations';
-import {NNETGlobalConfig, NNETKeys, YourGlobalConfig} from './types';
+import {NNETParameters, NNETKeys, NNETConfig} from './types';
 import {PluginInterface, PluginParams} from '../types/interface';
 
 const {InputValidationError} = ERRORS;
 
-export const NNET = (globalConfig: YourGlobalConfig): PluginInterface => {
+export const NNET = (globalConfig: NNETConfig): PluginInterface => {
   const errorBuilder = buildErrorMessage(NNET.name);
   const metadata = {
     kind: 'execute',
@@ -28,7 +28,7 @@ export const NNET = (globalConfig: YourGlobalConfig): PluginInterface => {
   const execute = async (inputs: PluginParams[]): Promise<PluginParams[]> => {
     return inputs.map(input => {
       const safeGlobalConfig = validateGlobalConfig();
-      const inputParameners: NNETGlobalConfig =
+      const inputParameners: NNETParameters =
         safeGlobalConfig['input-parameters'];
       const outputParameter = safeGlobalConfig['output-parameter'];
       const safeInput = Object.assign(
@@ -52,7 +52,7 @@ export const NNET = (globalConfig: YourGlobalConfig): PluginInterface => {
    */
   const calculateEnergyTraining = (
     input: PluginParams,
-    inputParameters: NNETGlobalConfig
+    inputParameters: NNETParameters
   ) => {
     const hardwareTraining = input[inputParameters['hardware/count/training']];
     const serversTraining = input[inputParameters['servers/count/training']];
@@ -94,7 +94,7 @@ export const NNET = (globalConfig: YourGlobalConfig): PluginInterface => {
 
   const validateInput = (
     input: PluginParams,
-    inputParameters: NNETGlobalConfig
+    inputParameters: NNETParameters
   ) => {
     const keys: NNETKeys[] = Object.keys(inputParameters) as NNETKeys[];
     for (const parameter of keys) {

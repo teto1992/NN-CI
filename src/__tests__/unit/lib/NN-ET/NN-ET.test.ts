@@ -1,4 +1,5 @@
 import {NNET} from '../../../../lib';
+import {NNETConfig} from '../../../../lib/NN-ET/types';
 
 import {ERRORS} from '../../../../lib/util/errors';
 
@@ -7,7 +8,7 @@ const {InputValidationError} = ERRORS;
 describe('lib/NNET: ', () => {
   describe('NNET(): ', () => {
     it('has metadata field.', () => {
-      const pluginInstance = NNET({});
+      const pluginInstance = NNET({} as NNETConfig);
 
       expect(pluginInstance).toHaveProperty('metadata');
       expect(pluginInstance).toHaveProperty('execute');

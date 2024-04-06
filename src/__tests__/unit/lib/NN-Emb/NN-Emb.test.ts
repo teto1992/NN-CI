@@ -1,11 +1,21 @@
-import {NNEC} from '../../../../lib';
+import {NNEmb} from '../../../../lib';
+import {NNEmbConfig} from '../../../../lib/NN-Emb/types';
 import {ERRORS} from '../../../../lib/util/errors';
 
 const {InputValidationError} = ERRORS;
 
-describe('lib/NNEC: ', () => {
+describe('lib/NNEmb: ', () => {
   it('is a valid plugin', () => {
-    const pluginInstance = NNEC({});
+    const globalConfig: NNEmbConfig = {
+      'input-parameters': {
+        'list/carbon-intensity': [],
+        'list/device-production-energy': [],
+        'list/device-count': [],
+        'list/energy-transport': [],
+      },
+      'output-parameter': 'output',
+    };
+    const pluginInstance = NNEmb(globalConfig);
     expect(pluginInstance).toHaveProperty('metadata');
     expect(pluginInstance).toHaveProperty('execute');
     expect(pluginInstance.metadata).toHaveProperty('kind');
@@ -24,7 +34,7 @@ describe('execute(): ', () => {
       },
       'output-parameter': 'total-embodied-carbon',
     };
-    const pluginInstance = NNEC(globalConfig);
+    const pluginInstance = NNEmb(globalConfig);
     const inputs = [
       {
         'server/count': 100,
@@ -49,7 +59,7 @@ describe('execute(): ', () => {
   it('throw an error on a wrong globalConfig', async () => {
     const errorMessage =
       '"input-parameters" parameter is required. Error code: invalid_type.,"output-parameter" parameter is required. Error code: invalid_type.';
-    const pluginInstance = NNEC({});
+    const pluginInstance = NNEmb({} as NNEmbConfig);
     const inputs = [
       {
         'server/count': 100,
@@ -69,7 +79,7 @@ describe('execute(): ', () => {
 
   it('throw an error on a missing parameter', async () => {
     const errorMessage =
-      'NNEC: server/production-energy is missing from the input array.';
+      'NNEmb: server/production-energy is missing from the input array.';
     const globalConfig = {
       'input-parameters': {
         'list/device-count': ['server/count'],
@@ -79,7 +89,7 @@ describe('execute(): ', () => {
       },
       'output-parameter': 'total-embodied-carbon',
     };
-    const pluginInstance = NNEC(globalConfig);
+    const pluginInstance = NNEmb(globalConfig);
     const inputs = [
       {
         'server/count': 100,
@@ -97,7 +107,7 @@ describe('execute(): ', () => {
   });
 
   it('throw an error on an invalid input', async () => {
-    const errorMessage = 'NNEC: the provided lists have different length.';
+    const errorMessage = 'NNEmb: the provided lists have different length.';
     const globalConfig = {
       'input-parameters': {
         'list/device-count': ['server/count'],
@@ -107,7 +117,7 @@ describe('execute(): ', () => {
       },
       'output-parameter': 'total-embodied-carbon',
     };
-    const pluginInstance = NNEC(globalConfig);
+    const pluginInstance = NNEmb(globalConfig);
     const inputs = [
       {
         'server/count': 100,
@@ -126,7 +136,7 @@ describe('execute(): ', () => {
   });
 
   it('throw an error on an invalid input type', async () => {
-    const errorMessage = 'NNEC: server/energy-factor is not a number.';
+    const errorMessage = 'NNEmb: server/energy-factor is not a number.';
     const globalConfig = {
       'input-parameters': {
         'list/device-count': ['server/count'],
@@ -136,7 +146,7 @@ describe('execute(): ', () => {
       },
       'output-parameter': 'total-embodied-carbon',
     };
-    const pluginInstance = NNEC(globalConfig);
+    const pluginInstance = NNEmb(globalConfig);
     const inputs = [
       {
         'server/count': 100,

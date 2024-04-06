@@ -1,12 +1,13 @@
-import {NNCE} from '../../../../lib';
+import {NNC} from '../../../../lib';
+import {NNCConfig} from '../../../../lib/NN-C/types';
 import {ERRORS} from '../../../../lib/util/errors';
 
 const {InputValidationError} = ERRORS;
 
-describe('lib/NNCE: ', () => {
-  describe('NNCE(): ', () => {
+describe('lib/NNC: ', () => {
+  describe('NNC(): ', () => {
     it('is a valid plugin', () => {
-      const pluginInstance = NNCE({});
+      const pluginInstance = NNC({} as NNCConfig);
       expect(pluginInstance).toHaveProperty('metadata');
       expect(pluginInstance).toHaveProperty('execute');
       expect(pluginInstance.metadata).toHaveProperty('kind');
@@ -18,13 +19,13 @@ describe('lib/NNCE: ', () => {
     it('applies logic on provided inputs array', async () => {
       const globalConfig = {
         'input-parameters': {
-          'location/servers-energy': ['server/italy'],
+          'location/datacenter-energy': ['server/italy'],
           'location/carbon-intensity': ['alpha/italy'],
           'location/energy-transport': ['tau/italy'],
         },
         'output-parameter': 'carbon-emission',
       };
-      const pluginInstance = NNCE(globalConfig);
+      const pluginInstance = NNC(globalConfig);
       const inputs = [
         {
           'server/italy': 100,
@@ -48,7 +49,7 @@ describe('lib/NNCE: ', () => {
       const errorMessage =
         '"input-parameters" parameter is required. Error code: invalid_type.,"output-parameter" parameter is required. Error code: invalid_type.';
       const globalConfig = {};
-      const pluginInstance = NNCE(globalConfig);
+      const pluginInstance = NNC(globalConfig as NNCConfig);
       const inputs = [
         {
           'server/italy': 100,
@@ -65,16 +66,16 @@ describe('lib/NNCE: ', () => {
     });
 
     it('throw an error on an invalid input', async () => {
-      const errorMessage = 'NNCE: the provided lists have different length.';
+      const errorMessage = 'NNC: the provided lists have different length.';
       const globalConfig = {
         'input-parameters': {
-          'location/servers-energy': ['server/italy'],
+          'location/datacenter-energy': ['server/italy'],
           'location/carbon-intensity': [],
           'location/energy-transport': ['tau/italy'],
         },
         'output-parameter': 'carbon-emission',
       };
-      const pluginInstance = NNCE(globalConfig);
+      const pluginInstance = NNC(globalConfig);
       const inputs = [
         {
           'server/italy': 100,
@@ -92,16 +93,16 @@ describe('lib/NNCE: ', () => {
     });
 
     it('throw an error on an invalid input type', async () => {
-      const errorMessage = 'NNCE: tau/italy is not a number.';
+      const errorMessage = 'NNC: tau/italy is not a number.';
       const globalConfig = {
         'input-parameters': {
-          'location/servers-energy': ['server/italy'],
+          'location/datacenter-energy': ['server/italy'],
           'location/carbon-intensity': ['alpha/italy'],
           'location/energy-transport': ['tau/italy'],
         },
         'output-parameter': 'carbon-emission',
       };
-      const pluginInstance = NNCE(globalConfig);
+      const pluginInstance = NNC(globalConfig);
       const inputs = [
         {
           'server/italy': 100,
@@ -119,17 +120,16 @@ describe('lib/NNCE: ', () => {
     });
 
     it('throw an error on a missing server energy', async () => {
-      const errorMessage =
-        'NNCE: server/italy is missing from the input array.';
+      const errorMessage = 'NNC: server/italy is missing from the input array.';
       const globalConfig = {
         'input-parameters': {
-          'location/servers-energy': ['server/italy'],
+          'location/datacenter-energy': ['server/italy'],
           'location/carbon-intensity': ['alpha/italy'],
           'location/energy-transport': ['tau/italy'],
         },
         'output-parameter': 'carbon-emission',
       };
-      const pluginInstance = NNCE(globalConfig);
+      const pluginInstance = NNC(globalConfig);
       const inputs = [
         {
           'alpha/italy': 0.389,
@@ -146,16 +146,16 @@ describe('lib/NNCE: ', () => {
     });
 
     it('throw an error on a missing carbon-intensity', async () => {
-      const errorMessage = 'NNCE: alpha/italy is missing from the input array.';
+      const errorMessage = 'NNC: alpha/italy is missing from the input array.';
       const globalConfig = {
         'input-parameters': {
-          'location/servers-energy': ['server/italy'],
+          'location/datacenter-energy': ['server/italy'],
           'location/carbon-intensity': ['alpha/italy'],
           'location/energy-transport': ['tau/italy'],
         },
         'output-parameter': 'carbon-emission',
       };
-      const pluginInstance = NNCE(globalConfig);
+      const pluginInstance = NNC(globalConfig);
       const inputs = [
         {
           'server/italy': 100,
@@ -172,16 +172,16 @@ describe('lib/NNCE: ', () => {
     });
 
     it('throw an error on a missing energy-transport', async () => {
-      const errorMessage = 'NNCE: tau/italy is missing from the input array.';
+      const errorMessage = 'NNC: tau/italy is missing from the input array.';
       const globalConfig = {
         'input-parameters': {
-          'location/servers-energy': ['server/italy'],
+          'location/datacenter-energy': ['server/italy'],
           'location/carbon-intensity': ['alpha/italy'],
           'location/energy-transport': ['tau/italy'],
         },
         'output-parameter': 'carbon-emission',
       };
-      const pluginInstance = NNCE(globalConfig);
+      const pluginInstance = NNC(globalConfig);
       const inputs = [
         {
           'server/italy': 100,

@@ -3,13 +3,13 @@ import {z} from 'zod';
 import {ERRORS} from '../util/errors';
 import {buildErrorMessage} from '../util/helpers';
 import {validate, allDefined} from '../util/validations';
-import {NNECGlobalConfig} from './types';
+import {NNEmbConfig} from './types';
 import {PluginInterface, PluginParams} from '../types/interface';
 
 const {InputValidationError} = ERRORS;
 
-export const NNEC = (globalConfig: NNECGlobalConfig): PluginInterface => {
-  const errorBuilder = buildErrorMessage(NNEC.name);
+export const NNEmb = (globalConfig: NNEmbConfig): PluginInterface => {
+  const errorBuilder = buildErrorMessage(NNEmb.name);
   const metadata = {
     kind: 'execute',
   };

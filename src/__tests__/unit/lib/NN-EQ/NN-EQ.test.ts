@@ -1,4 +1,5 @@
 import {NNEQ} from '../../../../lib';
+import {NNEQConfig} from '../../../../lib/NN-EQ/types';
 
 import {ERRORS} from '../../../../lib/util/errors';
 
@@ -7,7 +8,7 @@ const {InputValidationError} = ERRORS;
 describe('lib/NNEQ: ', () => {
   describe('NNEQ(): ', () => {
     it('has metadata field.', () => {
-      const pluginInstance = NNEQ({});
+      const pluginInstance = NNEQ({} as NNEQConfig);
 
       expect(pluginInstance).toHaveProperty('metadata');
       expect(pluginInstance).toHaveProperty('execute');
@@ -17,7 +18,7 @@ describe('lib/NNEQ: ', () => {
 
     describe('execute(): ', () => {
       it('applies logic on provided inputs array.', async () => {
-        const globalConfig = {
+        const globalConfig: NNEQConfig = {
           'input-parameters': {
             'servers/count/query': 'servers/query',
             'servers/power/query': 'power/query',

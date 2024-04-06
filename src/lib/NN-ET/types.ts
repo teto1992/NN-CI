@@ -1,5 +1,8 @@
-export type YourGlobalConfig = Record<string, any>;
-export type NNETGlobalConfig = {
+export type NNETConfig = {
+  'input-parameters': NNETParameters;
+  'output-parameter': string;
+};
+export type NNETParameters = {
   'hardware/count/training': string;
   'hardware/power/training': string;
   'servers/count/training': string;
@@ -8,4 +11,4 @@ export type NNETGlobalConfig = {
   'pue/training': string;
 };
 
-export type NNETKeys = keyof NNETGlobalConfig;
+export type NNETKeys = keyof NNETParameters;
