@@ -34,10 +34,10 @@ All of `input-parameters` must be available in the `inputs` array.
 
 ## Calculation
 
-$output = \sum_{d=0}^n \frac{\alpha_d}{\tau_d}*E(d)$
+$output = \sum_{d\in D} \frac{\alpha_d}{\tau_d}*E(d)$
 
 where:
-
+- $D$ is the set of all Datacenters
 - $E(d)$ is an entry of `location/datacenter-energy`
 
 - $\alpha_d$ is an entry of `location/carbon-intensity`
