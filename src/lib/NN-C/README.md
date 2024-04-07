@@ -105,3 +105,12 @@ tree:
           italy/carbon-intensity: 0.389
           italy/energy-transport: 0.95
 ```
+You can run this example by saving it as `./examples/manifests/test/nn-eq.c` and executing the following command from the project root:
+
+```sh
+npm i -g @grnsft/if
+npm i -g @grnsft/if-plugins
+ie --manifest ./examples/manifests/test/nn-c.yml --output ./examples/outputs/nn-c.yml
+```
+
+The results will be saved to a new `yaml` file in `./examples/outputs`.

@@ -123,5 +123,15 @@ tree:
           gpu/count: 10000
           gpu/production-energy: 1000
           gpu/carbon-intensity: 0.429
-          gpu/energy-transport\: 0.9
+          gpu/energy-transport: 0.9
 ```
+
+You can run this example by saving it as `./examples/manifests/test/nn-emb.yml` and executing the following command from the project root:
+
+```sh
+npm i -g @grnsft/if
+npm i -g @grnsft/if-plugins
+ie --manifest ./examples/manifests/test/nn-emb.yml --output ./examples/outputs/nn-emb.yml
+```
+
+The results will be saved to a new `yaml` file in `./examples/outputs`.
