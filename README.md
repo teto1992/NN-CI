@@ -38,7 +38,7 @@ mixes. Particularly, our plugins answer the following questions:
 
 Please refer to the `manifest.yml` file for a full-fledged example of our plugin pipeline, based on data from the training and querying of GPT-3. The demo is run in this [video presentation](https://youtu.be/sWv5F_T9B6o).
 
-### References
+## References
 
 Our solution was inspired by different estimate models available in the
 literature. For the calculations of energy and carbon emissions of training and
