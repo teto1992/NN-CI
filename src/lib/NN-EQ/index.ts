@@ -41,7 +41,7 @@ export const NNEQ = (globalConfig: NNEQConfig): PluginInterface => {
 
   /**
    * Calculate the Energy consumed during the Training.
-   * Eq = |Hq| * ∆t * PUEq * Power consumedq
+   * Eq = |Hq| * ∆t * PUEq * Power consumed
    */
   const calculateenergyQ = (
     input: PluginParams,

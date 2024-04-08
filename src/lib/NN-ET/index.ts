@@ -22,9 +22,6 @@ export const NNET = (globalConfig: NNETConfig): PluginInterface => {
     'pue/training', // power usage effectiveness
   ];
 
-  /**
-   * Execute's strategy description here, looking at sci-m.
-   */
   const execute = async (inputs: PluginParams[]): Promise<PluginParams[]> => {
     return inputs.map(input => {
       const safeGlobalConfig = validateGlobalConfig();
@@ -47,8 +44,7 @@ export const NNET = (globalConfig: NNETConfig): PluginInterface => {
   };
   /**
    * Calculate the Energy consumed during the Training.
-   * Et = |Ht| * ∆t * PUEt * Power consumedt
-   *
+   * Et = |Ht| * ∆t * PUEt * Power consumed
    */
   const calculateEnergyTraining = (
     input: PluginParams,
