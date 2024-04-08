@@ -1,10 +1,12 @@
-# if-plugin-template
+# nn-ci plugin
 
-`if-plugin-template` is an environmental impact calculator template which exposes an API for [IF](https://github.com/Green-Software-Foundation/if) to retrieve energy and embodied carbon estimates.
+This project implements a set of plugins to calculate the carbon emissions produced during neural network (NN) training and inference phases, accounting for embodied carbon and carbon intensity of different energy mixes powering up the different Cloud facilities at hand. 
+Overall, we implemented 4 plug-ins inspired by the state of the art, to estimate:
+- embodied carbon emissions of the training & querying phase (`nn-emb`),
+- energy consumption of NN training phase (`nn-et`),
+- energy consumption of NN querying phase (`nn-eq`), and
+- carbon emissions of NN training & querying phase (`nn-c`, combining `nn-et` and `nn-eq`).
 
-## Implementation
-
-Here can be implementation details of the plugin. For example which API is used, transformations and etc.
 
 ## Usage
 
