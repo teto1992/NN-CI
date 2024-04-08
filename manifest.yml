@@ -3,23 +3,6 @@ description:
 tags:
 initialize:
   plugins:
-    nn-c:
-      path: 'if-plugin-nnci'
-      method: NNC
-      global-config:
-        input-parameters:
-          {
-            location/datacenter-energy:
-              ['energy-consumed-by-training-NN', 'energy-consumed-by-query-NN'],
-            location/carbon-intensity:
-              ['carbon-intensity/training', 'carbon-intensity/query'],
-            location/energy-transport:
-              [
-                'energy-transport-factor/training',
-                'energy-transport-factor/query',
-              ],
-          }
-        output-parameter: 'carbon-emission-by-NN'
     nn-et:
       path: 'if-plugin-nnci'
       method: NNET
@@ -74,6 +57,29 @@ initialize:
               ],
           }
         output-parameter: 'embodied-carbon-of-NN'
+    nn-c:
+      path: 'if-plugin-nnci'
+      method: NNC
+      global-config:
+        input-parameters:
+          {
+            location/datacenter-energy:
+              ['energy-consumed-by-training-NN', 'energy-consumed-by-query-NN'],
+            location/carbon-intensity:
+              ['carbon-intensity/training', 'carbon-intensity/query'],
+            location/energy-transport:
+              [
+                'energy-transport-factor/training',
+                'energy-transport-factor/query',
+              ],
+          }
+        output-parameter: 'carbon-emission-by-NN'
+    sum:
+      path: '@grnsft/if-plugins'
+      method: Sum
+      global-config:
+        input-parameters: ['embodied-carbon-of-NN', 'carbon-emission-by-NN']
+        output-parameter: 'total-carbon-emission-by-NN'
 tree:
   children:
     child-1:
@@ -82,6 +88,7 @@ tree:
         - nn-eq
         - nn-emb
         - nn-c
+        - sum
       inputs:
         - timestamp: '2023-12-12T00:00:00.000Z'
           servers/query: 3620
