@@ -9,8 +9,8 @@ initialize:
       global-config:
         input-parameters:
           {
-            'hardware/count/training': 'hardware/training',
-            'hardware/power/training': 'power/hardware-training',
+            'hardware/count/training': 'gpu/training',
+            'hardware/power/training': 'power/gpu-training',
             'servers/count/training': 'servers/training',
             'servers/power/training': 'power/servers-training',
             'time/training': 'time/training',
@@ -36,18 +36,18 @@ initialize:
         input-parameters:
           {
             list/device-count:
-              ['hardware/training', 'servers/training', 'servers/query'],
+              ['gpu/training', 'servers/training', 'servers/query'],
             list/device-production-energy:
               [
-                'hardware-training-production-energy',
-                'servers-training-production-energy',
-                'server-query-production-energy',
+                'gpu/training-manufacturing-energy',
+                'servers-training-manufacturing-energy',
+                'server-query-manufacturing-energy',
               ],
             list/carbon-intensity:
               [
-                'carbon-intensity/training',
-                'carbon-intensity/training',
-                'carbon-intensity/query',
+                'location-gpu-manufacturing/carbon-intensity',
+                'location-server-manufacturing/carbon-intensity',
+                'location-server-manufacturing/carbon-intensity',
               ],
             list/energy-transport:
               [
@@ -91,20 +91,26 @@ tree:
         - sum
       inputs:
         - timestamp: '2023-12-12T00:00:00.000Z'
-          servers/query: 3620
-          server-query-production-energy: 750
-          time/query: 24
-          pue/query: 1.1
-          power/query: 250
-          hardware/training: 10000
-          hardware-training-production-energy: 1000
+          # Training Hardware manufacturing
+          gpu/training: 10000
           servers/training: 625
-          servers-training-production-energy: 900
-          time/training: 360
+          gpu/training-manufacturing-energy: 1000 # kWh
+          location-gpu-manufacturing/carbon-intensity: 633 # gCO2-eq/kWh
+          servers-training-manufacturing-energy: 900 # kWh
+          location-server-manufacturing/carbon-intensity: 534 # gCO2-eq/kWh
+          # Training phase
+          time/training: 360 # hours
           pue/training: 1.1
-          power/hardware-training: 300
-          power/servers-training: 250
-          carbon-intensity/training: 0.429
-          carbon-intensity/query: 0.429
+          power/gpu-training: 300 # Watt
+          power/servers-training: 250 # Watt
+          carbon-intensity/training: 429 # gCO2-eq/kWh
           energy-transport-factor/training: 0.95
+          # Querying Hardware manufacturing
+          servers/query: 3620
+          server-query-manufacturing-energy: 900 # kWh
+          # Querying phase
+          time/query: 24 # hours
+          pue/query: 1.1
+          power/query: 250 # Watt
+          carbon-intensity/query: 429 # gCO2-eq/kWh
           energy-transport-factor/query: 0.95

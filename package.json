@@ -1,6 +1,6 @@
 {
   "name": "if-plugin-nnci",
-  "description": "Impact Framework plugins nn-et nn-eq.",
+  "description": "Impact Framework plugins nn-et, nn-eq, nn-emb, nn-c",
   "version": "v0.1.0",
   "author": {
     "name": "Fanar Dawood",
@@ -9,6 +9,20 @@
   "bugs": {
     "url": "https://github.com/Green-Software-Foundation/if-plugin-template/issues/new?assignees=&labels=feedback&projects=&template=feedback.md&title=Feedback+-+"
   },
+  "contributors": [
+    {
+      "name": "Fanar Dawood",
+      "email": "f.dawood@studenti.unipi.it"
+    },
+    {
+      "name": "Gabriele Scannagatti",
+      "email": "g.scannagatti@studenti.unipi.it"
+    },
+    {
+      "name": "Stefano Forti",
+      "email": "stefano.forti@unipi.it"
+    }
+  ],
   "dependencies": {
     "typescript": "^5.4.3",
     "zod": "^3.22.4"
