@@ -1,4 +1,4 @@
-# nn-ci plugin
+# nn-ci plugins
 
 This project implements a set of plugins to calculate the carbon emissions produced during neural network (NN) training and inference phases, accounting for embodied carbon and carbon intensity of different energy mixes powering up the different Cloud facilities at hand. 
 Overall, we implemented 4 plug-ins inspired by the state of the art, to estimate:
